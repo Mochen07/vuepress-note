@@ -1,8 +1,14 @@
 ---
 home: true
-heroImage: /hero.png
-actionText: 快速上手 →
-actionLink: /guide
+title: Home
+heroImage: /images/hero.png
+actions:
+  - text: 按钮1
+    link: /guide/
+    type: primary
+  - text: 按钮2
+    link: /guide/
+    type: secondary
 features:
 - title: 简洁至上
   details: 以 Markdown 为中心的项目结构，以最少的配置帮助你专注于写作。
