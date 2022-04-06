@@ -29,8 +29,8 @@ export default defineUserConfig<DefaultThemeOptions>({
   locales: {
     '/': {
       lang: 'zh-CN',
-      title: 'VuePress',
-      description: 'Vue驱动静态网站生成器'
+      title: '想名字想家',
+      description: '用VuePress构建学习笔记'
     }
   },
 

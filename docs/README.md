@@ -3,38 +3,37 @@ home: true
 title: Home
 heroImage: /images/hero.png
 actions:
-  - text: 按钮1
-    link: /guide/
+  - text: 入口
+    link: /vue2/
     type: primary
-  - text: 按钮2
-    link: /guide/
-    type: secondary
+  # - text: 按钮2
+  #   link: /guide/
+  #   type: secondary
 features:
 - title: 简洁至上
-  details: 以 Markdown 为中心的项目结构，以最少的配置帮助你专注于写作。
-- title: Vue 驱动
-  details: 享受 Vue + webpack 的开发体验，可以在 Markdown 中使用 Vue 组件，又可以使用 Vue 来开发自定义主题。
+  details: 以笔记积累为核心驱动力，增加学习笔记内容量包含深度广度。
 - title: 高性能
-  details: VuePress 会为每个页面预渲染生成静态的 HTML，同时，每个页面被加载的时候，将作为 SPA 运行。
-footer: MIT Licensed | Copyright © 2018-present Evan You
+  details: 享受笔记阅读的体验感，不断增加提高交互性插件，不断探索页面快速阅读体验。
+- title: 沉浸优化
+  details: 想了几个标题就为了这个标题的上位，哈哈~ 比较喜欢干这种提升视觉体验的东西。
+footer: MIT Licensed | Copyright © 2022-present MoChen You
 ---
 
-### 像数 1, 2, 3 一样容易
+### 坚持贵在点滴~
 
 ``` bash
 # 安装
-yarn global add vuepress # 或者：npm install -g vuepress
+yarn install
 
-# 新建一个 markdown 文件
-echo '# Hello VuePress!' > README.md
+# 启动
+yarn dev
 
-# 开始写作
-vuepress dev .
+# 参考
+https://github.com/vuepress/vuepress-next
+
+# 文件目录
+-- vue2
 
 # 构建静态文件
-vuepress build .
+yarn docs:build
 ```
-
-::: warning 注意
-请确保你的 Node.js 版本 >= 8.6。
-:::
