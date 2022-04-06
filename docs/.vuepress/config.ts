@@ -1,5 +1,6 @@
 import { defineUserConfig } from '@vuepress/cli'
 import type { DefaultThemeOptions } from '@vuepress/theme-default'
+import { navbar, sidebar } from './configs'
 
 export default defineUserConfig<DefaultThemeOptions>({
   base: '/',
@@ -35,6 +36,16 @@ export default defineUserConfig<DefaultThemeOptions>({
 
   themeConfig: {
     logo: '/images/hreo.png',
-    repo: 'vuepress/vuepress-next',
+
+    repo: 'Mochen07/vuepress-note',
+
+    docsDir: 'docs',
+
+    locales: {
+      '/': {
+        navbar: navbar.zh,
+        sidebar: sidebar.zh,
+      }
+    }
   }
 })
