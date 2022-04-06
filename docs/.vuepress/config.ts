@@ -35,7 +35,7 @@ export default defineUserConfig<DefaultThemeOptions>({
   },
 
   themeConfig: {
-    logo: '/images/hreo.png',
+    logo: '/images/hero.png',
 
     repo: 'Mochen07/vuepress-note',
 
