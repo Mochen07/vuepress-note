@@ -13,6 +13,7 @@
   "scripts": {
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
-    "dev": "yarn docs:dev --cache .cache"
+    "dev": "yarn docs:dev --cache .cache",
+    "build": "yarn docs:build --cache .cache",
   }
 }
