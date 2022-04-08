@@ -4,7 +4,7 @@ title: Home
 heroImage: /images/hero.png
 actions:
   - text: 入口
-    link: /vue2/
+    link: /guide
     type: primary
   # - text: 按钮2
   #   link: /guide/
