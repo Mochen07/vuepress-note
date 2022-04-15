@@ -5,9 +5,6 @@ export const zh: NavbarConfig = [
   {
     text: '指南',
     link: '/guide',
-    children: [
-      '/guide/prose/github-actions'
-    ]
   },
   {
     text: 'vue2源码阅读',
