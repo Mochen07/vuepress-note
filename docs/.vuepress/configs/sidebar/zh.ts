@@ -1,6 +1,10 @@
 import type { SidebarConfig } from '@vuepress/theme-default'
 
 export const zh: SidebarConfig = {
+  '/guide/': [
+    '/guide/prose/github-actions',
+    '/guide/prose/markdown',
+  ],
   '/vue2/': [
     {
       text: '准备工作',
