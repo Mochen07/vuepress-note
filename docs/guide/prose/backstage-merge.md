@@ -1,27 +1,61 @@
-# old后台合并至v3后台
+# v3后台独立
+
+> 2018年07月24日 15:15 `cater-source`（old后台）
+>
+> 2021年01月29日 10:23 `wzl-cater-h5`（v3后台）
+>
+> 2022年10月18日 10:16 [引入iframe合并方案](http://doc.int.kzl.com.cn/docs/technology-research/technology-research-1e7o82hvhjf1s)（v3后台以iframe嵌套的形式在old后台运行）
+
+old后台与v3后台原本是两个功能独立的后台项目，因产品市场的需要紧急拼成一个合在一起运行的项目。在当时确实是一个不错的方案，不过随着不断的迭代时间的推移许多问题逐渐的浮现了出来。
+
+- 不易维护。
+- 交互体验差。
+- 影响工作效率。
+
+所有现在有了v3后台独立的迫切需求，希望在保证项目平稳的前提下，消除iframe嵌套所带来的一些实质上的问题。
 
 ## v3项目独立缺少什么？
 
-现在v3项目缺少登陆页面、完整的菜单路由交互、完整的全局数据状态管理。这里主要围绕着这三个问题，提供相应的解决方案。首先在登陆层面会有全局数据的产生，为了保证数据的一致性统一使用v3的全局状态。
+在iframe嵌套之前，v3有着属于自己的运行系统。从登陆到菜单再到各个功能模块运行有着一整套完整流程。不过随着iframe合并之后，一年多的时间弃用没有维护，再加上后续功能的迭代，显然已经不能再用了。所以现在v3后项目想要独立运行现在缺什么？
 
-### 登陆页面以及全局数据（demo）
+- **登陆系统**
+- **菜单路由系统**
+- **old后台现有的功能模块**
 
-影响的页面，应该怎么做，怎么保证数据不受影响，以及相关路由的拦截校验的页面跳转。
+除了上面表面上的看到的缺失功能，`old后台现有的功能模块`内部的**全局数据的运转**肯定会涉及更改，加上`登陆以及路由系统`也是全局数据得维护起来，所有需要设计一套合理的全局数据，便于维护、更改、兼容v3。
 
-1. 把登陆页面迁移过来，页面功能以及相关的样式还原，以及涉及的组件/api/方法等的迁移。
-2. 登陆成功对于全局数据的处理，这里统一处理如下（与现在的v3后台的数据保持一致：localStorage-userInfo）：
-   
-```javasricpt
-/** old后台转换v3后台数据（localStorage:userInfo） */
+- **全局数据的维护/更改/兼容**
+
+怎样确保v3项目在独立过程中的稳定性？
+
+- **项目的稳定性**
+
+## 登陆系统
+
+废弃v3原有的登陆页面系统，**将old登陆页面系统迁移到v3**和**登陆页面系统全局数据的维护/更改/兼容**。
+
+1. old登陆页面迁移到v3(页面、功能、样式、组件、api、方法)。得到：
+     1. 用户信息（UInfo）
+     2. 连锁信息（GInfo）
+     3. 品牌信息（BInfo）
+     4. 门店信息（SInfo）
+
+2. 登陆成功对于**全局数据的处理**。基本遵循与现在的v3后台的数据保持一致（vuex以及localStorage）。
+
+### 用户信息
+
+现有old后台给v3后台下发的数据。(也就是v3项目localStorage里面的userInfo)
+
+```javascript
 // 旧
 export const v3GetUserInfo = (headerKey) => {
   return new Promise((resolve, reject) => {
     try {
-      // 集团信息(需要找一下来源)
+      // 集团信息
       const curGroup = JSON.parse(localStorage.getItem('curGroup'))
-      // 店铺信息(需要找一下来源)
+      // 店铺信息
       const curShop = JSON.parse(localStorage.getItem('curShop'))
-      // header(需要找一下来源)
+      // header
       const header = JSON.parse(localStorage.getItem(headerKey))
       const gid_text = curGroup.name
       const originBid = header.gid
@@ -59,8 +93,11 @@ export const v3GetUserInfo = (headerKey) => {
 }
 ```
 
+old下发v3数据接口(UInfo)。
+
+> 下面的数据结构是根据现在v3后台的userInfo还原的数据模型，虽然有不合理的地方，但必须先保证v3数据userInfo的完整性，确保v3的页面不受影响。
+
 ```javascript
-// 下面的数据结构是更具v3后台的userInfo还原的数据类型，虽然有很多不合理的地方，先不在意这些细节，先保证v3数据的完整性，后面在统一做处理。登陆之后抛出的结构大概就是这个样子的。
 /** 数据结构 */
 // src/helpers/constants/global_info.ts
 interface UInfo {
@@ -185,7 +222,7 @@ ps: 根据功能可以把用户信息与连锁品牌门店信息分开
 
   - 迁移页面需要修改localStorage引用，统一使用vuex里面的数据
 
-### 菜单路由（demo）
+## 菜单路由系统
 
 重构，这里先简单的搭个架子，最开始会只有路由，后面慢慢的把一下仅需的功能（选择门店与连锁、营业状态切换、用户口令与退出、搜索订单）补充上去。
 
@@ -299,99 +336,7 @@ export default menusInfo
   - 重构菜单路由，基础菜单路由页面、选择门店与连锁、营业状态切换、用户口令与退出、搜索订单的顺序开发
   - 维护全局状态MenusInfo, 通过getCurrentMenus统一更新路由信息，needFilterPermissionList控制路由的相关配置。
 
-### 全局环境变量兼容（demo）
-
-这一步其实很重要，就是可以在不影响开发的前提下更好的实现平稳迁移。目的就是为了在保持现有框架结构不变的情况下，一点点的迁移页面。而且在迁移完成之后可以在test/qa/pre先试运行一段时候之后再发布正式环境，从而实现平稳迁移。
-
-定义独立环境的配置
-
-```javascript
-// /package.json
-
-{
-  "script": {
-    // ...
-    "dev:independent": "cross-env env_config=independent NODE_OPTIONS=\"--max_old_space_size=8192\" webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 0.0.0.0",
-  }
-}
-```
-
-```javascript
-// /config/independent.env.js
-
-/** independent环境 */
-'use strict'
-module.exports = {
-  NODE_ENV: '"qa"',
-  ZERO_ENCRY_VALUE: '"0"', // 0的加密值 pre和正式为 WEqLJ3 qa和testing mRe1R8,
-  USERNAME: '"cater"',
-  PASSWOED: '"96j58I$J$KQR76MH"',
-  SIGN: '"guB&Vy9iM^4kiWd#"',
-  IMG_HOST: '"https://img.weizhilian.com/"',
-  HOST: '"https://caterapi-qa.weizhilian.com"',
-  COS_API: '"https://cater-api-v3-qa.weizhilian.com"',
-  APPLY_CODE: '"https://img.weizhilian.com/opla1ettpqleonko80s1keral4"',
-  IS_INDEPENDENT: true,
-}
-```
-
-```javascript
-// /src/utils/independent.ts
-
-/**
- * @description v3独立运行的标识
- * @returns {boolean}
- * @todo 用于兼容v3以iframe形式在old运行
- */
-export const getIsIndependent = function () {
-  console.log('=======当前v3项目运行状态=======', `${process.env.IS_INDEPENDENT ? '独立运行' : '非独立运行'}`)
-  return !!process.env.IS_INDEPENDENT
-}
-```
-
-通过方法getIsIndependent对当前v3项目与独立之后的修改做一个兼容，如下
-
-```javascript
-// 正常的修改
-// 代码片段（批处理layout, 对modules里面的BaseLayout替换为Layout）
-- import BaseLayout from '@/components/BaseLayout/Index/Index.vue'
-+ const Layout = () => import('@/views/layout/Layout')
-// 代码片段
-- component: BaseLayout,
-+ component: Layout,
-
-// 兼容处理
-// 代码片段
-import { getIsIndependent } from '@/utils/independent'
-component: getIsIndependent() ? BaseLayout : Layout
-```
-
-```javascript
-// 登陆页面
-// src/router/modules/common.js
-import { getIsIndependent } from '@/utils/independent'
-const Login = () => import('@/views/login/login')
-export default [
-  {
-    path: '/login',
-    name: 'login',
-    component: getIsIndependent() ? Login : oldLogin,
-    meta: {
-      title: '系统登录'
-    }
-  },
-  ...
- ]
-```
-
-需要兼容的有：登陆、布局、iframe交互。
-
-#### 总结
-
-  - 定义兼容环境变量名称IS_INDEPENDENT，以及新的independent环境
-  - getIsIndependent兼容当前v3项目与独立之后的修改
-
-## 页面迁移
+## old后台现有的功能模块
 
 ### 页面整理收集
 
@@ -523,7 +468,99 @@ v3的pages文件夹名称说明
       - ...  // 统一使用下划线拼接
 ```
 
-### 注意事项
+## 项目的稳定性
+
+这一步其实很重要，就是可以在不影响开发的前提下更好的实现平稳迁移。目的就是为了在保持现有框架结构不变的情况下，一点点的迁移页面。而且在迁移完成之后可以在test/qa/pre先试运行一段时候之后再发布正式环境，从而实现平稳迁移。
+
+定义独立环境的配置
+
+```javascript
+// /package.json
+
+{
+  "script": {
+    // ...
+    "dev:independent": "cross-env env_config=independent NODE_OPTIONS=\"--max_old_space_size=8192\" webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 0.0.0.0",
+  }
+}
+```
+
+```javascript
+// /config/independent.env.js
+
+/** independent环境 */
+'use strict'
+module.exports = {
+  NODE_ENV: '"qa"',
+  ZERO_ENCRY_VALUE: '"0"', // 0的加密值 pre和正式为 WEqLJ3 qa和testing mRe1R8,
+  USERNAME: '"cater"',
+  PASSWOED: '"96j58I$J$KQR76MH"',
+  SIGN: '"guB&Vy9iM^4kiWd#"',
+  IMG_HOST: '"https://img.weizhilian.com/"',
+  HOST: '"https://caterapi-qa.weizhilian.com"',
+  COS_API: '"https://cater-api-v3-qa.weizhilian.com"',
+  APPLY_CODE: '"https://img.weizhilian.com/opla1ettpqleonko80s1keral4"',
+  IS_INDEPENDENT: true,
+}
+```
+
+```javascript
+// /src/utils/independent.ts
+
+/**
+ * @description v3独立运行的标识
+ * @returns {boolean}
+ * @todo 用于兼容v3以iframe形式在old运行
+ */
+export const getIsIndependent = function () {
+  console.log('=======当前v3项目运行状态=======', `${process.env.IS_INDEPENDENT ? '独立运行' : '非独立运行'}`)
+  return !!process.env.IS_INDEPENDENT
+}
+```
+
+通过方法getIsIndependent对当前v3项目与独立之后的修改做一个兼容，如下
+
+```javascript
+// 正常的修改
+// 代码片段（批处理layout, 对modules里面的BaseLayout替换为Layout）
+- import BaseLayout from '@/components/BaseLayout/Index/Index.vue'
++ const Layout = () => import('@/views/layout/Layout')
+// 代码片段
+- component: BaseLayout,
++ component: Layout,
+
+// 兼容处理
+// 代码片段
+import { getIsIndependent } from '@/utils/independent'
+component: getIsIndependent() ? BaseLayout : Layout
+```
+
+```javascript
+// 登陆页面
+// src/router/modules/common.js
+import { getIsIndependent } from '@/utils/independent'
+const Login = () => import('@/views/login/login')
+export default [
+  {
+    path: '/login',
+    name: 'login',
+    component: getIsIndependent() ? Login : oldLogin,
+    meta: {
+      title: '系统登录'
+    }
+  },
+  ...
+ ]
+```
+
+需要兼容的有：登陆、布局、iframe交互。
+
+#### 总结
+
+  - 定义兼容环境变量名称IS_INDEPENDENT，以及新的independent环境
+  - getIsIndependent兼容当前v3项目与独立之后的修改
+
+## 注意事项
 
 1. 部分功能弹窗v3页面存在使用old后台组件的情况。
 2. old后台使用的本地缓存数据（localstorage/sessionstorage/cookie），迁移页面的时候需要注意。
