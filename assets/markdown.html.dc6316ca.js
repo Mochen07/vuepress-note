@@ -1,0 +1,1 @@
+const e={key:"v-0541bc8e",path:"/guide/prose/markdown.html",title:"Markdown",lang:"zh-CN",frontmatter:{},excerpt:"",headers:[],git:{updatedTime:1702999325e3,contributors:[{name:"mochen",email:"mochen7777@gmail.com",commits:1}]},filePathRelative:"guide/prose/markdown.md"};export{e as data};

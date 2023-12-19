@@ -1,4 +1,4 @@
-import{c as n}from"./app.18e74212.js";import{_ as s}from"./plugin-vue_export-helper.21dcd24c.js";const a={},e=n(`<h3 id="\u575A\u6301\u8D35\u5728\u70B9\u6EF4" tabindex="-1"><a class="header-anchor" href="#\u575A\u6301\u8D35\u5728\u70B9\u6EF4" aria-hidden="true">#</a> \u575A\u6301\u8D35\u5728\u70B9\u6EF4~</h3><div class="language-bash ext-sh line-numbers-mode"><pre class="language-bash"><code><span class="token comment"># \u5B89\u88C5</span>
+import{c as n}from"./app.3a9c4c1b.js";import{_ as s}from"./plugin-vue_export-helper.21dcd24c.js";const a={},e=n(`<h3 id="\u575A\u6301\u8D35\u5728\u70B9\u6EF4" tabindex="-1"><a class="header-anchor" href="#\u575A\u6301\u8D35\u5728\u70B9\u6EF4" aria-hidden="true">#</a> \u575A\u6301\u8D35\u5728\u70B9\u6EF4~</h3><div class="language-bash ext-sh line-numbers-mode"><pre class="language-bash"><code><span class="token comment"># \u5B89\u88C5</span>
 <span class="token function">yarn</span> <span class="token function">install</span>
 
 <span class="token comment"># \u542F\u52A8</span>
