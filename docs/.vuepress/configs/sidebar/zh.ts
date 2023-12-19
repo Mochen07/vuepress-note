@@ -4,6 +4,7 @@ export const zh: SidebarConfig = {
   '/guide/': [
     '/guide/prose/github-actions',
     '/guide/prose/markdown',
+    '/guide/prose/backstage-merge',
   ],
   '/vue2/': [
     {
