@@ -34,7 +34,7 @@ old后台与v3后台原本是两个功能独立的后台项目，因产品市场
 
 废弃v3原有的登陆页面系统，**将old登陆页面系统迁移到v3**和**登陆页面系统全局数据的维护/更改/兼容**。
 
-1. old登陆页面迁移到v3(页面、功能、样式、组件、api、方法)。得到：
+1. old登陆页面迁移到v3(页面、功能、样式、组件、api、方法)。登陆得到：
      1. 用户信息（UInfo）
      2. 连锁信息（GInfo）
      3. 品牌信息（BInfo）
@@ -93,7 +93,7 @@ export const v3GetUserInfo = (headerKey) => {
 }
 ```
 
-old下发v3数据接口(UInfo)。
+old下发v3整合UInfo数据接口。
 
 > 下面的数据结构是根据现在v3后台的userInfo还原的数据模型，虽然有不合理的地方，但必须先保证v3数据userInfo的完整性，确保v3的页面不受影响。
 
@@ -131,19 +131,87 @@ interface UInfo {
 }
 ```
 
-1. 对应的vuex处理方案,同步（store/common/userInfo）
+vuex同步用户信息（store/common/userInfo）
 
-> 当前的全局信息，有连锁、品牌、门店、路由信息，以及业务相关的页面级别的门店信息。 （确保本地缓存页面刷新之后能够还原现有的vuex信息）
+> 全局信息储存的信息，都要用interface定义一下确保知道每个字段是干啥的。
 
-全局信息储存的路径，用interface定义一下确保每个字段都知道是干啥的。
 ```javascript
 - store
   - modules
     - global_info.ts
 ```
 
-global_info.ts(写法可与现有store写法保持一致拆开写)
 ```javascript
+import { UInfo } from '@src/helpers/constants/global_info.ts'
+interface GlobalInfo {
+  /** 用户 */
+  uInfo: UInfo,
+}
+const globalInfo = {
+  state: () => ({
+    /** 用户 */
+    uInfo: {} as UInfo,
+  }),
+  mutations: {
+    /** 设置用户信息 */
+    uInfoSet(state: GlobalInfo, uInfo: UInfo) {
+      state.uInfo = uInfo
+    }
+  },
+  actions: {
+    // 获取用户信息
+    uInfoService({ commit }) {
+      // 异步获取uInfo的数据，并调用uInfoSet，mutation进行设置（以及一些特殊字段处理）
+    },
+    // 用户退出登陆
+    uInfoRemove() {
+      // ...
+    }
+  },
+}
+export default globalInfo
+```
+
+localStorage缓存userInfo(UInfo)。
+
+> 确保本地缓存页面刷新之后能够还原现有的vuex信息
+
+### 关于localStorage的改动
+
+#### old后台localStorage数据处理
+
+| Key                                      | Value                                                                | 处理方式                              |
+| ---------------------------------------- | -------------------------------------------------------------------- | --------------------------          |
+| expireTime                               | 1701830570956                                                        | 保留（v3后台有相同的字段）               |
+| https://caterapi-qa.weizhilian.comheader | {"token":"eyJhbGciOiJ...（此处数据已截断）                              | ❌弃用（同步转换至userInfo）            |
+| curGroup                                 | {"id":10006,"status":1,"name":"豪侠汇餐厅...                           | ❌弃用（每次刷新重新请求，可放到vuex保存） |
+| brandListParams                          | {"page":1,"query":"","size":20,"gid":10006}                          | ❌弃用                                |
+| curBrand                                 | {"id":-1,"gid":10006,"name":"连锁设置","chainStatus":1,"business":1}   | ❌弃用（每次刷新重新请求，可放到vuex保存） |
+| groupList                                | [{"id":10006,"name":"豪侠汇餐厅...                                     | ❌弃用（每次刷新重新请求，可放到vuex保存） |
+| shopList                                 | {"page":1,"size":20,"query":""}                                      | ❌弃用                                |
+| brandList                                | [{"id":-1,"gid":1000...                                              | ❌弃用                                |
+| curShop                                  | {"id":0,"bid":0}                                                     | ❌弃用                                |
+| groupListParams                          | {"page":1,"size":20,"query":""}                                      | ❌弃用                                |
+| shopListParams                           | {"page":0,"size":20,"query":""}                                      | ❌弃用                                |
+| loglevel:webpack-dev-server              | WARN                                                                 | ❌弃用                                |
+
+❗上面涉及的相关缓存同步处理到Vuex下，尽量不要使用localStorage数据平移，不宜于维护。
+
+#### v3后台localStorage数据处理
+
+> 保留原有的userInfo、expireTime
+
+| Key                                      | Value                                                                | 处理方式                              |
+| ---------------------------------------- | -------------------------------------------------------------------- | --------------------------          |
+| expireTime                               | 1701830570956                                                        | 保留（v3后台有相同的字段）               |
+| userInfo                                 | {"token":"eyJhbGciOiJ...（此处数据已截断）                              | 保留数据同UInfo                        |
+
+### 连锁、品牌、门店信息
+
+跟用户信息同理
+
+```javascript
+// todo: 这里的数据需要在业务场景提取，看那些是需要的，用interface定义统一管理
 import { GInfo, BInfo, SInfo, UInfo } from '@src/helpers/constants/global_info.ts'
 interface GlobalInfo {
   /** 连锁 */
@@ -167,68 +235,63 @@ const globalInfo = {
     uInfo: {} as UInfo,
   }),
   mutations: {
+    /** 设置集团信息 */
+    gInfoSet(state: GlobalInfo, gInfo: GInfo) {
+    },
     // ...
-    /** 设置用户信息 */
-    setUInfo(state: GlobalInfo, uInfo: UInfo) {
-      state.uInfo = uInfo
-    }
+    /** 设置品牌信息 */
+    /** 设置门店信息 */
+    // ...
   },
   actions: {
-    // ...
-    fetchUInfo({ commit }) {
-      // 异步获取uInfo的数据，并调用setUInfo mutation进行设置
+    /** 获取集团信息 */
+    gInfoService({ commit }) {
+      // 异步获取gInfo的数据，并调用setGInfo，mutation进行设置（以及一些特殊字段处理）
     },
+    // ...
+    /** 获取品牌信息 */
+    /** 获取门店信息 */
     // ...
   },
 }
 export default globalInfo
 ```
 
-ps: 根据功能可以把用户信息与连锁品牌门店信息分开
+### 小结
 
-1. old后台localStorage里面数据处理
+- 登陆页面迁移。
 
-| Key                                      | Value                                                                | 处理方式                              |
-| ---------------------------------------- | -------------------------------------------------------------------- | --------------------------          |
-| expireTime                               | 1701830570956                                                        | 保留（v3后台有相同的字段）               |
-| https://caterapi-qa.weizhilian.comheader | {"token":"eyJhbGciOiJ...（此处数据已截断）                              | ❌弃用（同步转换至userInfo）            |
-| curGroup                                 | {"id":10006,"status":1,"name":"豪侠汇餐厅...                           | ❌弃用（每次刷新重新请求，可放到vuex保存） |
-| brandListParams                          | {"page":1,"query":"","size":20,"gid":10006}                          | ❌弃用                                |
-| curBrand                                 | {"id":-1,"gid":10006,"name":"连锁设置","chainStatus":1,"business":1}   | ❌弃用（每次刷新重新请求，可放到vuex保存） |
-| groupList                                | [{"id":10006,"name":"豪侠汇餐厅...                                     | ❌弃用（每次刷新重新请求，可放到vuex保存） |
-| shopList                                 | {"page":1,"size":20,"query":""}                                      | ❌弃用                                |
-| brandList                                | [{"id":-1,"gid":1000...                                              | ❌弃用                                |
-| curShop                                  | {"id":0,"bid":0}                                                     | ❌弃用                                |
-| groupListParams                          | {"page":1,"size":20,"query":""}                                      | ❌弃用                                |
-| shopListParams                           | {"page":0,"size":20,"query":""}                                      | ❌弃用                                |
-| loglevel:webpack-dev-server              | WARN                                                                 | ❌弃用                                |
+- 使用interface定义相关数据结构，保证数据的准确性。
 
-上面涉及的相关缓存同步处理下，尽量不要使用。
+- 用户信息保存localStorage/userInfo。
 
-1. v3后台localStorage里面的数据情况
+- 用户、集团、品牌、门店信息用vuex的module/globalInfo统一管理。
 
-> 保留原有的userInfo、expireTime
-
-| Key                                      | Value                                                                | 处理方式                              |
-| ---------------------------------------- | -------------------------------------------------------------------- | --------------------------          |
-| expireTime                               | 1701830570956                                                        | 保留（v3后台有相同的字段）               |
-| userInfo                                 | {"token":"eyJhbGciOiJ...（此处数据已截断）                              | 保留数据同UInfo                        |
-
-#### 总结
-
-  - 登陆页面以及相关引用迁移
-
-  - 用户信息组装保存localStorage/vuex，并一致保持数据的准确性
-
-  - 迁移页面需要修改localStorage引用，统一使用vuex里面的数据
+- 关于old部分localStorage字段的弃用，改用vuex/globalInfo(相关interface定义的字段)。
 
 ## 菜单路由系统
 
-重构，这里先简单的搭个架子，最开始会只有路由，后面慢慢的把一下仅需的功能（选择门店与连锁、营业状态切换、用户口令与退出、搜索订单）补充上去。
+> 之前old菜单有大量iframe和全局数据的包袱，以及部分历史代码错综复杂交织在一起。
 
-需要注意的是路由权限问题getPermissions方法获取了权限的值(cater-source/src/views/layout/publiceResah.js)
+整体思路：重构。先搭菜单路由，后面补全局的功能。
+
+> 全局功能有：
+>
+> - 选择门店与连锁
+>
+> - 营业状态切换
+>
+> - 用户口令与退出
+>
+> - 搜索订单
+
+### 路由重构
+
+#### 权限
 
 ```javascript
+// cater-source/src/views/layout/publiceResah.js
+// getPermissions方法获取了权限的值
 [
   "shop:pc:back",
   "shop:pc:back:home",
@@ -237,7 +300,13 @@ ps: 根据功能可以把用户信息与连锁品牌门店信息分开
 ]
 ```
 
-在printVersion2版本中增加了路由切换的隐藏显示判断；后续可能还会有更多的类似操作；这里把router相关的东西也放到vuex里面，记得定义包对应的接口文件，确保数据的准确性
+在printVersion2版本中增加了根据后台配置，切换路由的隐藏显示判断。
+
+后续可能还会有更多的类似操作。
+
+#### 菜单vuex
+
+当然路由也是全局数据，放到vuex里面统一管理。
 
 ```javascript
 import { deepClone } from "@/utils/utils"
@@ -331,26 +400,33 @@ const menusInfo = {
 export default menusInfo
 ```
 
-#### 总结
+### 补全局的功能
 
-  - 重构菜单路由，基础菜单路由页面、选择门店与连锁、营业状态切换、用户口令与退出、搜索订单的顺序开发
-  - 维护全局状态MenusInfo, 通过getCurrentMenus统一更新路由信息，needFilterPermissionList控制路由的相关配置。
+**选择门店与连锁**、**营业状态切换**、**用户口令与退出**、**搜索订单**根据老版功能平移，替换相关全局字段。
+
+### 小结
+
+- 先重构菜单，再平移补充全局功能。
+
+- 维护全局状态MenusInfo。
+  - 通过getCurrentMenus统一更新路由信息。
+  - needFilterPermissionList控制路由的相关配置。
 
 ## old后台现有的功能模块
 
 ### 页面整理收集
 
-[excel整理](https://w4ib2x4t86.feishu.cn/sheets/L4pEssEBkhvZN1tHDk4cVhXon4d)后台所有的路由，包括有old以及v3的页面路由。
+[excel整理](https://w4ib2x4t86.feishu.cn/sheets/L4pEssEBkhvZN1tHDk4cVhXon4d)后台所有的路由，包括有**old后台以及v3后台的页面主路由**。
 
-截止目前（23年11月15前版本路由）总共139个主路由，有44个old主路由需要迁移至v3，占总体的约32%。
+截止目前（23年11月15前版本路由）总共139个主路由。`有44个old主路由需要迁移至v3，占总体的约32%。`
 
 ### 页面迁移流程
 
-> 这里建议先从简单的页面开始迁移，后面再迁移比较复杂的页面。因为在迁移的过程中还有有许多的[注意事项](#注意事项)的。
+> 这里建议先从简单的页面开始迁移，熟悉之后再迁移比较复杂的页面。
 
-  1. 查看[excel整理](https://w4ib2x4t86.feishu.cn/sheets/L4pEssEBkhvZN1tHDk4cVhXon4d)，筛选所属项目为old的项（则是需要迁移的页面）。
-  2. 更新[excel整理](https://w4ib2x4t86.feishu.cn/sheets/L4pEssEBkhvZN1tHDk4cVhXon4d)，在开发人员项写上自己的大名（避免出现多人迁移一个页面的情况）。
-  3. 迁移页面（注意[注意事项](#注意事项)）。
+  1. 查看[excel整理](https://w4ib2x4t86.feishu.cn/sheets/L4pEssEBkhvZN1tHDk4cVhXon4d)，筛选`所属项目`为`old`的项（则是需要迁移的页面）。
+  2. 更新[excel整理](https://w4ib2x4t86.feishu.cn/sheets/L4pEssEBkhvZN1tHDk4cVhXon4d)，**开发前**，在`开发人员`写上自己的大名（避免出现多人迁移一个页面的情况）。
+  3. 迁移页面（[注意事项](#注意事项)）。
 
 ### 页面迁移规则
 
@@ -555,10 +631,10 @@ export default [
 
 需要兼容的有：登陆、布局、iframe交互。
 
-#### 总结
+### 小结
 
-  - 定义兼容环境变量名称IS_INDEPENDENT，以及新的independent环境
-  - getIsIndependent兼容当前v3项目与独立之后的修改
+- 定义兼容环境变量名称IS_INDEPENDENT，以及新的independent环境。
+- getIsIndependent方法兼容当前v3项目与独立之后的修改。
 
 ## 注意事项
 
