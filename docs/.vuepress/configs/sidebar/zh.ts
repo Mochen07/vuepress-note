@@ -7,6 +7,7 @@ export const zh: SidebarConfig = {
     '/guide/prose/uniapp-main-seo',
     '/guide/prose/v3-add-v2-before',
     '/guide/prose/v3-add-v2',
+    '/guide/prose/v3-add-v2-after',
   ],
   '/vue2/': [
     {
