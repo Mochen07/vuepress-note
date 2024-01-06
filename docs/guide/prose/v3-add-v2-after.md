@@ -1,16 +1,51 @@
 # kzl-v3独立总结
 
-主要是想写一下开发的注意事项，还有就是测试重点。
+## 开发说明
+
+1. 现在v3整合的v2文件在v2_files的文件加里面，不建议在现有v3的基础上去使用v2_files的代码了，方便后续优化、迁移、删除废弃的代码、删除插件等。
+
+1. v2全局组件名称统一加上了`V2`，避免与v3组件重名（本是同源，分离之后各有造诣）。
+
+1. v2的vuex部分名称有更改，引入store，详见`@/store/index.js`, 不建议在现有v3的基础上去实用v2的module，方便后续优化删除对应module。
+
+1. v2的router没有更改，引入store，详见`@/router/index.js`，因为登陆、路由在v2，所以现在路由的拦截、权限、守卫都在v2，引入到了v3。
+
+1. 登陆之后的v2数据转v3数据的方法封装，详见`import {initV3GlobalData} from '@/v2_files/utils/v2_add_v3_info.js'`。
+
+1. 样式这一块，屏蔽了element的主题设置（项目构建warning的警告（6个）是由于element-ui过低，目前是2.4.1，需要升级到2.15.7（参考），跨度太大目前暂不升级。），v2的全局样式全局引入在了v3，解决类名与v3重复的问题。后续v3写样式的时候也需要稍微注意一下，避免v2全局样式的影响，方便后续优化。
+
+1. iframe的交互方式修改成发布订阅的模式。存在4种交互：v2的发布/订阅；v3的发布/订阅。
 
 ## 开发的注意事项
 
 ### 关于代码同步
 
-v2后台代码，查看的当前[需要合并的内容](http://git.int.kzl.com.cn/k/cater-source/compare/fea/v3_add_v2_before...fea/print_manage)。根据当前的差异同步平移。
+v2后台后面有修改需要两个分支都改一下。
 
 ### 安装依赖失败
 
 v3的webpack版本升级后安装依赖报错，需要python环境，可以到[python官网下载](https://www.python.org/downloads/release/python-2716/)对应的版本安装。
+
+如果python默认不是需要的版本需要手动配置一下。
+
+```bash
+# 查看系统环境变量定义目录中的可执行文件路径
+which python2
+# 配置当前node版本npm的配置项
+npm config set python /usr/local/bin/python2
+```
+
+### ci构建ETIMEDOUT
+
+跨年后，在ci构建过程中出现出现了`ETIMEDOUT`的情况。
+
+本地通过删除node_modules以及npm cache clean --force，复现。
+
+解决方法：
+
+- 删除package-lock.json
+- npm install // 拉取依赖成功
+- 保存package-lock.json // ci构建成功
 
 ## 测试重点
 
@@ -64,5 +99,6 @@ v3的webpack版本升级后安装依赖报错，需要python环境，可以到[p
 
 ### 样式
 
-1. 页面样式对比
-   范围：所有页面
+1. 页面样式对比。
+
+   范围：所有页面。

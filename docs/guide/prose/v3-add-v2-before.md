@@ -140,7 +140,7 @@ router.beforeEach(async(to, from, next) => {
     await oldRouterBeforeEach(to, from, next)
 })
 
-// 迁移老后台afterEach
+// 迁移v2afterEach
 router.afterEach(() => {
   // 给页面动态设置标题
   // document.title = '客智联- ' + router.history.current.meta.title
@@ -203,7 +203,7 @@ export default new Vuex.Store({
 // src/v2_files/views/layout/Layout.vue
 this.$router.push(data.redirectUrl)
 // if (!data.isV3) {
-//   // this.gotoV3PageUrl = ''// 加这个是为了顶部导航栏在跳老后台后上一个v3url入栈
+//   // this.gotoV3PageUrl = ''// 加这个是为了顶部导航栏在跳v2后上一个v3url入栈
 //   this.$router.push(data.redirectUrl)
 // } else {
 //   this.gotoV3PageUrl = data.redirectUrl
@@ -256,7 +256,7 @@ export const v3GetUserInfo = (headerKey) => {
       } else {
         params = { ...params, gid_text, uname: header.name, originBid, type: 'group' }
       }
-      console.log('这里获取老后台的用户信息', JSON.stringify(params))
+      console.log('这里获取v2的用户信息', JSON.stringify(params))
       resolve(params)
     } catch (e) {
       reject(e)
@@ -273,7 +273,7 @@ localStorage.setItem('userInfo', userInfo)
 this.$store.dispatch('common/setUserInfo', { userInfo: userInfo })
 ```
 
-8. 老后台全局组件方法等处理❗
+8. v2全局组件方法等处理❗
 
 ```javascript
 // src/v2_files/main.js
@@ -311,7 +311,7 @@ import '@/v2_files/main'
     // 替换index
     ```
 
-    9.3 侧边样式覆盖问题（v3样式覆盖了老后台样式）
+    9.3 侧边样式覆盖问题（v3样式覆盖了v2样式）
 
     ```javascript
     // src/App.vue
@@ -334,7 +334,7 @@ import '@/v2_files/main'
     + --hoverBoxHeight: 0px;
     ```
 
-    9.5 全局替换老后台跳转v3路径
+    9.5 全局替换v2跳转v3路径
 
     ```javascript
     // /v3/base 替换为 空
@@ -372,8 +372,8 @@ jenkins打包耗时：688421ms 约 11.4min
 
 - [x] 1. [关于v3项目的接入](#关于v3项目的接入)第4点，需要检查v3项目与老项目路由是否存在冲突。（如果有则会优先使用v3的路由）；以及v3 beforeEach弃用是否会有什么隐藏的问题。
 
-- [x] 2. [关于v3项目的接入](#关于v3项目的接入)第6点，跟伟伟沟通过v3失去了iframe标签支撑，原来与老后台的通讯交互都需要逐一调整。
-- [x] 3. [关于v3项目的接入](#关于v3项目的接入)第7点，这里只是处理了，之前老后台进入v3后台传递的全局数据，变为了，登陆直接直接传递。其他的地方是否有特殊处理，暂不知道。
+- [x] 2. [关于v3项目的接入](#关于v3项目的接入)第6点，跟伟伟沟通过v3失去了iframe标签支撑，原来与v2的通讯交互都需要逐一调整。
+- [x] 3. [关于v3项目的接入](#关于v3项目的接入)第7点，这里只是处理了，之前v2进入v3后台传递的全局数据，变为了，登陆直接直接传递。其他的地方是否有特殊处理，暂不知道。
 - [x] 4. [关于v3项目的接入](#关于v3项目的接入)第8点，这个操作有点暴力，但是还是挺有效的。存在的问题：全局样式覆盖、影响性能、未发现的隐藏问题。
 - [x] 5. 打包后，左侧侧边栏出现样式问题（开发环境正常）
 - [x] 6. 页面登陆失效会跳到/home空白页面，导致无法操作
