@@ -2,13 +2,13 @@
 
 ❗❗❗(遗留的问题)1. 异步业务逻辑层的抽离，补建议直接直接在状态管理里面处理数据 2. 数据模型一定要有补全 3. 数据逻辑的处理单独抽离出来，比如说路由权限的判断那个地方。
 
-> 2018年07月24日 15:15 `cater-source`（old后台）
+> 2018年07月24日 15:15 `cater-source`（v2后台）
 >
 > 2021年01月29日 10:23 `wzl-cater-h5`（v3后台）
 >
-> 2022年10月18日 10:16 [引入iframe合并方案](http://doc.int.kzl.com.cn/docs/technology-research/technology-research-1e7o82hvhjf1s)（v3后台以iframe嵌套的形式在old后台运行）
+> 2022年10月18日 10:16 [引入iframe合并方案](http://doc.int.kzl.com.cn/docs/technology-research/technology-research-1e7o82hvhjf1s)（v3后台以iframe嵌套的形式在v2后台运行）
 
-old后台与v3后台原本是两个功能独立的后台项目，因产品市场的需要紧急拼成一个合在一起运行的项目。在当时确实是一个不错的方案，不过随着不断的迭代时间的推移许多问题逐渐的浮现了出来。
+v2后台与v3后台原本是两个功能独立的后台项目，因产品市场的需要紧急拼成一个合在一起运行的项目。在当时确实是一个不错的方案，不过随着不断的迭代时间的推移许多问题逐渐的浮现了出来。
 
 - 不易维护。
 - 交互体验差。
@@ -22,9 +22,9 @@ old后台与v3后台原本是两个功能独立的后台项目，因产品市场
 
 - **登陆系统**
 - **菜单路由系统**
-- **old后台现有的功能模块**
+- **v2后台现有的功能模块**
 
-除了上面表面上的看到的缺失功能，`old后台现有的功能模块`内部的**全局数据的运转**肯定会涉及更改，加上`登陆以及路由系统`也是全局数据得维护起来，所有需要设计一套合理的全局数据，便于维护、更改、兼容v3。
+除了上面表面上的看到的缺失功能，`v2后台现有的功能模块`内部的**全局数据的运转**肯定会涉及更改，加上`登陆以及路由系统`也是全局数据得维护起来，所有需要设计一套合理的全局数据，便于维护、更改、兼容v3。
 
 - **全局数据的维护/更改/兼容**
 
@@ -36,9 +36,9 @@ old后台与v3后台原本是两个功能独立的后台项目，因产品市场
 
 ## 登陆系统
 
-废弃v3原有的登陆页面系统，**将old登陆页面系统迁移到v3**和**登陆页面系统全局数据的维护/更改/兼容**。
+废弃v3原有的登陆页面系统，**将v2登陆页面系统迁移到v3**和**登陆页面系统全局数据的维护/更改/兼容**。
 
-1. old登陆页面迁移到v3(页面、功能、样式、组件、api、方法)。登陆得到：
+1. v2登陆页面迁移到v3(页面、功能、样式、组件、api、方法)。登陆得到：
      1. 用户信息（UInfo）
      2. 连锁信息（GInfo）
      3. 品牌信息（BInfo）
@@ -50,7 +50,7 @@ old后台与v3后台原本是两个功能独立的后台项目，因产品市场
 
 ### 用户信息
 
-现有old后台给v3后台下发的数据。(也就是v3项目localStorage里面的userInfo)
+现有v2后台给v3后台下发的数据。(也就是v3项目localStorage里面的userInfo)
 
 ```javascript
 // 旧
@@ -99,7 +99,7 @@ export const v3GetUserInfo = (headerKey) => {
 }
 ```
 
-old下发v3整合UInfo数据接口。
+v2下发v3整合UInfo数据接口。
 
 > 下面的数据结构是根据现在v3后台的userInfo还原的数据模型，虽然有不合理的地方，但必须先保证v3数据userInfo的完整性，确保v3的页面不受影响。
 
@@ -184,7 +184,7 @@ localStorage缓存userInfo(UInfo)。
 
 ### 关于localStorage的改动
 
-#### old后台localStorage数据处理
+#### v2后台localStorage数据处理
 
 | Key                                      | Value                                                                | 处理方式                              |
 | ---------------------------------------- | -------------------------------------------------------------------- | --------------------------          |
@@ -273,11 +273,11 @@ export default globalInfo
 
 - 用户、集团、品牌、门店信息用vuex的module/globalInfo统一管理。
 
-- 关于old部分localStorage字段的弃用，改用vuex/globalInfo(相关interface定义的字段)。
+- 关于v2部分localStorage字段的弃用，改用vuex/globalInfo(相关interface定义的字段)。
 
 ## 菜单路由系统
 
-> 之前old菜单有大量iframe和全局数据的包袱，以及部分历史代码错综复杂交织在一起。
+> 之前v2菜单有大量iframe和全局数据的包袱，以及部分历史代码错综复杂交织在一起。
 
 整体思路：重构。先搭菜单路由，后面补全局的功能。
 
@@ -418,19 +418,19 @@ export default menusInfo
   - 通过getCurrentMenus统一更新路由信息。
   - needFilterPermissionList控制路由的相关配置。
 
-## old后台现有的功能模块
+## v2后台现有的功能模块
 
 ### 页面整理收集
 
-[excel整理](https://w4ib2x4t86.feishu.cn/sheets/L4pEssEBkhvZN1tHDk4cVhXon4d)后台所有的路由，包括有**old后台以及v3后台的页面主路由**。
+[excel整理](https://w4ib2x4t86.feishu.cn/sheets/L4pEssEBkhvZN1tHDk4cVhXon4d)后台所有的路由，包括有**v2后台以及v3后台的页面主路由**。
 
-截止目前（23年11月15前版本路由）总共139个主路由。`有44个old主路由需要迁移至v3，占总体的约32%。`
+截止目前（23年11月15前版本路由）总共139个主路由。`有44个v2主路由需要迁移至v3，占总体的约32%。`
 
 ### 页面迁移流程
 
 > 这里建议先从简单的页面开始迁移，熟悉之后再迁移比较复杂的页面。
 
-  1. 查看[excel整理](https://w4ib2x4t86.feishu.cn/sheets/L4pEssEBkhvZN1tHDk4cVhXon4d)，筛选`所属项目`为`old`的项（则是需要迁移的页面）。
+  1. 查看[excel整理](https://w4ib2x4t86.feishu.cn/sheets/L4pEssEBkhvZN1tHDk4cVhXon4d)，筛选`所属项目`为`v2`的项（则是需要迁移的页面）。
   2. 更新[excel整理](https://w4ib2x4t86.feishu.cn/sheets/L4pEssEBkhvZN1tHDk4cVhXon4d)，**开发前**，在`开发人员`写上自己的大名（避免出现多人迁移一个页面的情况）。
   3. 迁移页面（[注意事项](#注意事项)）。
 
@@ -459,7 +459,7 @@ export default menusInfo
 文件夹目录（这里以【运营中心-首页(门店)】为例）：
 
 ```javascript
-// old
+// v2
 - src
   - views
     - storeHome
@@ -490,7 +490,7 @@ v3的pages文件夹名称说明
 页面组件（保持原有的样子就好了）
 
 ```javascript
-// old
+// v2
 - src
   - views
     - storeHome
@@ -516,7 +516,7 @@ v3的pages文件夹名称说明
 全局组件（统一放在migration文件夹里面
 
 ```javascript
-// old
+// v2
 - src
   - components
     - Modal
@@ -592,7 +592,7 @@ module.exports = {
 /**
  * @description v3独立运行的标识
  * @returns {boolean}
- * @todo 用于兼容v3以iframe形式在old运行
+ * @todo 用于兼容v3以iframe形式在v2运行
  */
 export const getIsIndependent = function () {
   console.log('=======当前v3项目运行状态=======', `${process.env.IS_INDEPENDENT ? '独立运行' : '非独立运行'}`)
@@ -626,7 +626,7 @@ export default [
   {
     path: '/login',
     name: 'login',
-    component: getIsIndependent() ? Login : oldLogin,
+    component: getIsIndependent() ? Login : v2Login,
     meta: {
       title: '系统登录'
     }
@@ -644,7 +644,7 @@ export default [
 
 ## 注意事项
 
-1. 部分功能弹窗v3页面存在使用old后台组件的情况。
-2. old后台使用的本地缓存数据（localstorage/sessionstorage/cookie），迁移页面的时候需要注意。
+1. 部分功能弹窗v3页面存在使用v2后台组件的情况。
+2. v2后台使用的本地缓存数据（localstorage/sessionstorage/cookie），迁移页面的时候需要注意。
 3. 未知问题... 还有没有其他iframe的不为人知的操作。
 4. 最近webpack更新后（/deep/ 改为\:v-deep）。
