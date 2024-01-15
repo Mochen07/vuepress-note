@@ -47,7 +47,9 @@ npm config set python /usr/local/bin/python2
 
 ### 第一阶段
 
-1. 梳理现有全局数据（v2、v3）两套，两者处于脱节的状态，可能会出现数据不同步的情况，对后续开发造成困扰，需要统一维护起来。 ![vuex全局状态](../../../draw/v3_vuex.drawio.svg)
+> 解决后续开发问题、运行性能问题
+
+1. 梳理现有全局数据（v2、v3）两套，两者处于脱节的状态，可能会出现数据不同步的情况，对后续开发造成困扰，需要统一维护起来。 ![vuex全局状态](https://gitee.com/Mochen_7/draw_io/raw/main/vuepress_note/v3_vuex.drawio.svg)
 
    1. 用户/连锁/品牌/门店数据接口定义。
    2. 封装获取的数据model.ts逻辑。
@@ -73,6 +75,8 @@ npm config set python /usr/local/bin/python2
 
 ### 第二阶段
 
+> 消除v2_files文件夹，解决v2、v3文件分割的情况。
+
 1. [v2页面的迁移v3方案](#v2页面的迁移v3的方案)。目标就是让v2_files这个文件夹消失。
 
     1. 具体有哪些页面需要迁移，包括子页面。
@@ -87,9 +91,11 @@ npm config set python /usr/local/bin/python2
 
 ### 第三阶段
 
-1. 前端数据的维护方案，现在每个迭代一套数据。
-2. 前端目录维护方案。
-3. 开发规范。
+> 项目代码优化
+
+1. 前端目录维护方案。
+2. 开发规范。
+3. 前端数据的维护方案，现在每个迭代一套数据。
 
 ## v2页面的迁移v3的方案
 
@@ -99,7 +105,7 @@ npm config set python /usr/local/bin/python2
 
 **开发前**，在`开发人员`写上自己的大名（避免出现多人迁移一个页面的情况）。
 
-路由名称保持不变。可改变对应的component引用路径。根据现在v3文件夹规则来。
+路由名称保持不变。改变对应的component引用路径。根据v3项目规范来。
 
 ### 规则
 
