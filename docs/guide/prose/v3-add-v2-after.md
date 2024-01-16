@@ -6,7 +6,7 @@
 
 1. v2全局组件名称统一加上了`V2`，避免与v3组件重名（本是同源，分离之后各有造诣）。
 
-1. v2的vuex部分名称有更改，引入store，详见`@/store/index.js`, 不建议在现有v3的基础上去实用v2的module，方便后续优化删除对应module。
+1. v2的vuex部分名称有更改，引入store，详见`@/store/index.js`, 不建议在现有v3的基础上去使用v2的module，方便后续优化删除对应module。
 
 1. v2的router没有更改，引入store，详见`@/router/index.js`，因为登陆、路由在v2，所以现在路由的拦截、权限、守卫都在v2，引入到了v3。
 
@@ -49,7 +49,12 @@ npm config set python /usr/local/bin/python2
 
 > 解决后续开发问题、运行性能问题
 
-1. 梳理现有全局数据（v2、v3）两套，两者处于脱节的状态，可能会出现数据不同步的情况，对后续开发造成困扰，需要统一维护起来。 ![vuex全局状态](https://gitee.com/Mochen_7/draw_io/raw/main/vuepress_note/v3_vuex.drawio.svg)
+1. 梳理现有全局数据（v2、v3）两套，两者处于脱节的状态，可能会出现数据不同步的情况，对后续开发造成困扰，需要统一维护起来。
+  <img
+    src="https://gitee.com/Mochen_7/draw_io/raw/main/vuepress_note/v3_vuex.drawio.svg"
+    onerror="this.src='https://raw.githubusercontent.com/Mochen07/draw_io/e42cbc208012e9c708513d50381e65f56190625e/vuepress_note/v3_vuex.drawio.svg'"
+    alt="vuex全局状态"
+  />
 
    1. 用户/连锁/品牌/门店数据接口定义。
    2. 封装获取的数据model.ts逻辑。
@@ -57,21 +62,23 @@ npm config set python /usr/local/bin/python2
    4. 用现在有的vuex数据基础上去兼容之前的v3以及v2的全局数据，确保更新后v3与v2的数据也能更新。
    5. 在现有vuex状态维护的基础上制定本地缓存方案。确保刷新/新页面/多窗口门店切换数据的准确性。
 
-2. package.json里面去除v2不需要的依赖或者替换掉，具体增加了有哪些可以参考[这次的提交](http://git.int.kzl.com.cn/k/wzl-cater-h5/commit/232cbdf9f08f40a44667cef3a0e7e9d7c3b08fec)。
+1. package.json里面去除v2不需要的依赖或者替换掉，具体增加了有哪些可以参考[这次的提交](http://git.int.kzl.com.cn/k/wzl-cater-h5/commit/232cbdf9f08f40a44667cef3a0e7e9d7c3b08fec)。
 
-3. 清理旧版本iframe交互（v2与v3的交互全局去除）。消除不必要的性能/内存泄漏影响，合并后的项目已经没有再用了。
+1. 清理旧版本iframe交互（v2与v3的交互全局去除）。消除不必要的性能/内存泄漏影响，合并后的项目已经没有再用了。
 
-4. 关于v2_files里面main.js里面的优化，比如：删除未使用的全局定义、一两个页面使用的就不使用全局定义了改为局部引用等等。
+1. 关于v2_files里面main.js里面的优化，比如：删除未使用的全局定义、一两个页面使用的就不使用全局定义了改为局部引用等等。
 
-5. 关于v2_files里面一些没有用的文件。比如`_copy`命名的文件、无用图片、静态的文件、未使用的页面文件、遗弃的方法/样式 等等。
+1. 关于v2_files里面一些没有用的文件。比如`_copy`命名的文件、无用图片、静态的文件、未使用的页面文件、遗弃的方法/样式 等等。
 
-6. 关于v2新增的static看一下是否可以干掉，可以参考[这次的提交](http://git.int.kzl.com.cn/k/wzl-cater-h5/commit/99602ff13484d5a865c5dce0accf6c5cff9753bd)。
+1. 关于v2新增的static看一下是否可以干掉，可以参考[这次的提交](http://git.int.kzl.com.cn/k/wzl-cater-h5/commit/99602ff13484d5a865c5dce0accf6c5cff9753bd)。
 
-7. 关于iframe交互兼容的改写（$emit、$on）优化。目前项目合并在一起一些通讯是没有必要的。比如：直接引用组件、操作方法就好。
+1. 关于iframe交互兼容的改写（$emit、$on）优化。目前项目合并在一起一些通讯是没有必要的。比如：直接引用组件、操作方法就好。
 
-8. 清除代码中无用的console.log。
+1. 清除代码中无用的console.log。
 
-9. v3的ci构建打包优化。这里可能会对后续的优化给出一些建议。
+1. v3的ci构建打包优化。这里可能会对后续的优化给出一些建议。
+
+1. 解决控制台waning.
 
 ### 第二阶段
 
@@ -83,7 +90,19 @@ npm config set python /usr/local/bin/python2
     2. 迁移v2的router、vuex。
     3. 页面迁移的先后顺序，以及分配尽量避免页面之间的冲突。
 
-2. 组件合并方案。梳理项目中的组件，有些类似的就给合并了。
+2. 梳理路由/权限/菜单以及跳转逻辑，统一维护起来。（现在已经很难维护了，建议重构，还有单词错误的坑）
+
+   1. 问题：
+      1. 当前使用的是假路由。挂载了所有的路由，在通过路由拦截跳转页面。
+      2. 菜单维护了连锁/门店两套，权限值也是两套。
+      3. layout里面也有拦截，还有iframe的渲染交互。
+   2. 解决思路：
+      1. 直接挂在所有路由。
+      2. 菜单单独维护一套逻辑（参考方法 getMenuFunc）。
+      3. 通过菜单筛选菜单页面 路由拦截决定页面跳转（参考数据 allowPathList）。
+      4. layout重构，梳理交互逻辑，现在是鱼龙混杂。
+
+3. 组件合并方案。梳理项目中的组件，有些类似的就给合并了。
 
    1. 优惠券弹窗的替换。之前v2与v3使用的是两种优惠券弹窗逻辑。
    2. 选择门店、选择品牌等。
@@ -107,7 +126,17 @@ npm config set python /usr/local/bin/python2
 
 路由名称保持不变。改变对应的component引用路径。根据v3项目规范来。
 
+### router
+
+先全部搬过来再进行整理，特定的文件夹。
+
+### vuex
+
+先全部搬过来再进行整理，特定的文件夹。
+
 ### 规则
+
+> 优先处理登陆页面和layout页面。
 
 #### 路由页面
 
