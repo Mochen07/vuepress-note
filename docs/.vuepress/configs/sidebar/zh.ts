@@ -5,9 +5,10 @@ export const zh: SidebarConfig = {
     '/guide/prose/github-actions',
     '/guide/prose/markdown',
     '/guide/prose/uniapp-main-seo',
-    '/guide/prose/v3-add-v2-before',
-    '/guide/prose/v3-add-v2',
-    '/guide/prose/v3-add-v2-after',
+    '/guide/prose/v3_add_v2_v1',
+    '/guide/prose/v3_add_v2_v2',
+    '/guide/prose/v3_add_v2_v3',
+    '/guide/prose/v3_add_v2_v4',
   ],
   '/vue2/': [
     {
