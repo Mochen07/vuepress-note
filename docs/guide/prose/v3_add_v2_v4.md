@@ -42,12 +42,18 @@ export interface UserInfo {
 ### 机构信息
 
 ```typescript
+/** 删除机构信息 */
+/** localStorage跨窗口数据同步信息（用于维护当前的机构信息） */
+  1. 特殊值更新的后续操作(须判断值是否改变，如果未改变就不进行操作了)
+    1. 更新 连锁id
+      1. ... (参考：更新连锁信息)
+    2. 更新 门店id
+      1. ... (参考：更新门店信息)
 /** 从localStorage恢复store机构信息 */
   1. 设置连锁信息 走api
   2. 设置品牌信息 走api
   3. 设置门店信息 走api
   4. 更新初始化路由信息 走api
-/** 删除机构信息 */
 /** 是否是连锁 */
 /** 是否是门店 */
 ```
@@ -58,6 +64,7 @@ export interface UserInfo {
 export interface ChainInfo {
   /** 连锁id */
   /** 连锁名称 */
+  /** 连锁配置信息 */
   /** ... */
 }
 
@@ -71,6 +78,9 @@ export interface ChainInfo {
       3. 更新初始化路由信息 走api
 /** 设置连锁信息(同步store/localStorage) */
 /** 获取连锁信息(返回全部或者某个字段的值) */
+/** 从接口更新连锁配置信息 */
+  1. 更新连锁信息 走api
+/** 获取连锁配置(返回全部或者某个字段的值) */
 ```
 
 #### 品牌信息
@@ -81,6 +91,7 @@ export interface ChainInfo {
 export interface BrandInfo {
   /** 品牌id */
   /** 品牌名称 */
+  /** 品牌列表信息 */
   /** ... */
 }
 
@@ -89,6 +100,8 @@ export interface BrandInfo {
 /** 获取品牌信息(返回全部或者某个字段的值) */
 /** 重置品牌信息 */
   1. 更新品牌信息 走api
+/** 从接口更新品牌列表信息 */
+/** 获取品牌列表信息 */
 ```
 
 #### 门店信息
@@ -129,11 +142,19 @@ export interface StoreInfo {
 export interface RouterInfo {
   /** 当前用户路由(用于渲染菜单) */
   /** 当前用户路由路径(用于路由拦截) */
+  /** ... */
 }
-/** 更新初始化路由信息(更具权限值获取) */
-  1. 路由拦截
-/** 路由拦截(判断当前页面是否有权限访问，如果没有则重定向页面，更新初始化路由信息) */
+/** 更新路由信息(更具权限值获取) */
+  1. 路由拦截 走api
+/** 设置路由信息(同步store/localStorage) */
+/** 路由拦截(判断当前页面是否有权限访问，如果没有则重定向页面，更新路由信息) */
 ```
+
+<img
+  src="https://gitee.com/Mochen_7/draw_io/blob/main/vuepress_note/v3_global_shelf.drawio.svg"
+  onerror="this.src='https://raw.githubusercontent.com/Mochen07/draw_io/d8e6594f5f32db18162bc4382c8a338d99b3da8d/vuepress_note/v3_global_shelf.drawio.svg'"
+  alt="vuex全局状态"
+/>
 
 ## 页面组件
 
