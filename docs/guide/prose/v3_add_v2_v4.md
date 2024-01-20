@@ -43,7 +43,7 @@ export interface UserInfo {
 
 ```typescript
 /** 删除机构信息 */
-/** localStorage跨窗口数据同步信息（用于维护当前的机构信息） */
+/** localStorage跨窗口数据同步信息（用于维护当前的机构信息，这是双向操作，一个窗口改变，其余窗口接受） */
   1. 特殊值更新的后续操作(须判断值是否改变，如果未改变就不进行操作了)
     1. 更新 连锁id
       1. ... (参考：更新连锁信息)
@@ -78,7 +78,7 @@ export interface ChainInfo {
       3. 更新初始化路由信息 走api
 /** 设置连锁信息(同步store/localStorage) */
 /** 获取连锁信息(返回全部或者某个字段的值) */
-/** 从接口更新连锁配置信息 */
+/** 从接口更新连锁配置信息（可以尝试做成懒加载，获取值的时候去获取，看需求场景，因为可能不止一个接口） */
   1. 更新连锁信息 走api
 /** 获取连锁配置(返回全部或者某个字段的值) */
 ```
@@ -99,7 +99,7 @@ export interface BrandInfo {
 /** 设置品牌信息(同步store/localStorage) */
 /** 获取品牌信息(返回全部或者某个字段的值) */
 /** 重置品牌信息 */
-  1. 更新品牌信息 走api
+  1. 设置品牌信息 走api
 /** 从接口更新品牌列表信息 */
 /** 获取品牌列表信息 */
 ```
@@ -131,7 +131,7 @@ export interface StoreInfo {
   1. 更新门店信息 走api
 
 // 门店配置api
-/** 从接口更新门店配置信息 */
+/** 从接口更新门店配置信息（可以尝试做成懒加载，获取值的时候去获取，看需求场景，因为可能不止一个接口） */
   1. 更新门店信息 走api
 /** 获取门店配置信息(返回全部或者某个字段的值) */
 ```
@@ -151,7 +151,7 @@ export interface RouterInfo {
 ```
 
 <img
-  src="https://gitee.com/Mochen_7/draw_io/blob/main/vuepress_note/v3_global_shelf.drawio.svg"
+  src="https://gitee.com/Mochen_7/draw_io/raw/main/vuepress_note/v3_global_shelf.drawio.svg"
   onerror="this.src='https://raw.githubusercontent.com/Mochen07/draw_io/d8e6594f5f32db18162bc4382c8a338d99b3da8d/vuepress_note/v3_global_shelf.drawio.svg'"
   alt="vuex全局状态"
 />
@@ -163,10 +163,20 @@ export interface RouterInfo {
 1. 选品牌
 2. 选门店
 3. 选商品
+4. 重复的组件（针对纯UI组件需要收集整理下，放到组件库统一维护起来，比如：）
+   1. table组件 (项目里面存在很多table组件很似雷同)
+   2. input组件 (特别是对数字一些特殊格式的处理，比如：取整，保留小数位数，最大/最小范围等)
 
-### 页面组件数据收集
+### 页面组件相似度收集
 
-components统计约1553项，相似度组件约222项
+#### 功能性重叠
+
+1. 优惠券逻辑以及弹窗（v2/v3写了两套，类似逻辑）
+2. ...(类似的功能)
+
+#### 代码重叠
+
+components共约1553个，相似度组件约222项。
 
 ```typescript
 [
