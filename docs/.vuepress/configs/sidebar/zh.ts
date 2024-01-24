@@ -9,6 +9,7 @@ export const zh: SidebarConfig = {
     '/guide/prose/v3_add_v2_v2',
     '/guide/prose/v3_add_v2_v3',
     '/guide/prose/v3_add_v2_v4',
+    '/guide/prose/v3_add_v2_v5',
   ],
   '/vue2/': [
     {

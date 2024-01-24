@@ -23,7 +23,7 @@ export interface UserInfo {
 }
 
 // api
-/** 更新用户信息(传入Partial<ChainInfo>) */
+/** 更新用户信息(传入Partial<UserInfo>) */
   1. 设置用户信息 走api
   2. 特殊值更新的后续操作
     1. 更新 用户id/token/refreshToken任意字段
