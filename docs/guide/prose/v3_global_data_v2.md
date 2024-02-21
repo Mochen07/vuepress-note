@@ -2,17 +2,12 @@
 
 ```typescript
 - logics
-  - helpers // 常量
-  - model // 数据源
-  - service // 业务方法
-  - typings // interface 或 type 或 enum
+  - user
+    - helpers // 常量
+    - model // 数据源
+    - service // 业务方法
+    - typings // interface 或 type 或 enum
 ```
-
-<img
-  src="https://gitee.com/Mochen_7/draw_io/blob/main/vuepress_note/global_data.drawio.svg"
-  onerror="this.src='https://raw.githubusercontent.com/Mochen07/draw_io/2980c0eb53b1ec7fa61ada753976c9a91c8e3280/vuepress_note/global_data.drawio.svg'"
-  alt="全局数据"
-/>
 
 ## 数据拆分逻辑
 
@@ -27,6 +22,12 @@ UserModel提供了基本的数据操作方法以及获取方法，比如：数�
 `localStorage -> localStore.getItem(USER_LOCAL_STORAGE)`
 
 `vuex -> this.$store.state.global_data_v3`
+
+<img
+  src="https://gitee.com/Mochen_7/draw_io/raw/main/vuepress_note/global_data.drawio.svg"
+  onerror="this.src='https://raw.githubusercontent.com/Mochen07/draw_io/2980c0eb53b1ec7fa61ada753976c9a91c8e3280/vuepress_note/global_data.drawio.svg'"
+  alt="全局数据"
+/>
 
 ## UserService
 
