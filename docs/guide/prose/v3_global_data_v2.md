@@ -11,7 +11,7 @@
 
 ## 数据拆分逻辑
 
-UserService提供了根据不同业务去操作数据或者获取数据。比如：getUId()、getBId()、getGId()...。数据源来源于静态私有变量userModel`(new UserModel())`。
+UserService提供了根据不同业务去操作数据或者获取数据。比如：uId、sId、isChain、logout()...。数据源来源于静态私有变量userModel`(new UserModel())`。
 
 UserModel提供了基本的数据操作方法以及获取方法，比如：数据源user、设置setUserObj方法、从服务器获取数据（reqUserGroupList、reqUserBrandList...）等。同时具备数据持久化功能，(`数据源user`、`localStorage`、`vuex`)数据始终是保持同步的。
 
@@ -29,6 +29,13 @@ UserModel提供了基本的数据操作方法以及获取方法，比如：数�
   alt="全局数据"
 />
 
+使用方法
+UserService.uId
+UserService.sId
+UserService.isChain
+UserService.logout()
+...
+
 ## UserService
 
 > service提供的功能，注意区分同步与异步方法
@@ -38,8 +45,8 @@ UserModel提供了基本的数据操作方法以及获取方法，比如：数�
 1. loginInit
    1. 直接塞了用户信息数据，没有区分登陆业务，后续可做优化。
    2. 机构信息初始化，默认获取当前用户集团列表的第一个，有连锁设置取连锁设置，没有连锁设置取品牌列表第一个的品牌，的门店列表的第一个。
-2. getUId
-3. isLogin
+2. get uId
+3. get isLogin
 4. logout
    1. 退出登陆
 
@@ -47,10 +54,10 @@ UserModel提供了基本的数据操作方法以及获取方法，比如：数�
 
 1. selectGroup
    1. 选择集团，有连锁设置取连锁设置，没有连锁设置取品牌列表第一个的品牌，的门店列表的第一个。
-2. isGroup
-3. isChain
+2. get isGroup
+3. get isChain
    1. 同isGroup
-4. getGId
+4. get gId
 5. isControl
    1. 是否开启管辖范围控制
 6. isCloud
@@ -62,7 +69,7 @@ UserModel提供了基本的数据操作方法以及获取方法，比如：数�
    1. 选择品牌
 2. selectBrandGroup
    1. 集团下切换品牌（连锁设置下，页面里面的品牌切换）
-3. getBId
+3. get bId
 4. getBrandList
    1. 获取当前集团下的品牌列表（不分页）
 
@@ -70,12 +77,20 @@ UserModel提供了基本的数据操作方法以及获取方法，比如：数�
 
 1. selectStore
    1. 选择门店
-2. getSId
-3. isStore
+2. get sId
+3. get isStore
 4. getPrintVersion
    1. 当前门店的打印版本
-5. isPrintVersion1Hide
+5. get printVersion
+   1. 页面使用（门店打印版本）
+6. isPrintVersion1Hide
    1. 是否是版本升级后，v1需要隐藏的内容
+7. get isNotPrintV1
+   1. 页面使用（是否是版本升级后，v1需要隐藏的内容的）
+8. getStoreConfiguration
+   1. 获取商家功能配置信息
+9. get storeConfiguration
+   1. 页面使用（获取商家功能配置信息）
 
 路由
 
@@ -117,7 +132,9 @@ UserModel提供了基本的数据操作方法以及获取方法，比如：数�
     1. 获取用户门店列表
 15. [StoreApiFuncName.reqStoreDetail]
     1. 门店-接口获取当前门店详情
-16. getRouterPermissionKeys
+16. [StoreApiFuncName.reqStoreConfiguration]
+    1. 获取商家功能配置信息
+17. getRouterPermissionKeys
     1. 获取当前用户的菜单权限值
 
 ## 已经实现的功能点
