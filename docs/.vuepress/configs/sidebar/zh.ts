@@ -12,6 +12,8 @@ export const zh: SidebarConfig = {
     '/guide/prose/v3_add_v2_v5',
     '/guide/prose/v3_global_data_v1',
     '/guide/prose/v3_global_data_v2',
+    '/guide/prose/development_norms',
+    '/guide/prose/ci_seo',
   ],
   '/vue2/': [
     {
